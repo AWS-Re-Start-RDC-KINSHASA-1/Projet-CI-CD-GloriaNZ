@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      # Install AWS CLI
+      - yum install -y awscli
+
+  build:
+    commands:
+      # Modify the desired capacity of Auto Scaling Group to double the current size
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name myAutoScale --min-size 2
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name myAutoScale --desired-capacity 4
+      # Wait for the new instances to be fully launched and healthy
+      - sleep 60 # You might need to adjust the sleep time based on your instance launch time and health check grace periods
+      # Modify the desired capacity back to the original size
+      - aws autoscaling update-auto-scaling-group --auto-scaling-group-name myAutoScale --desired-capacity 2
